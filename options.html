@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>Scrapnote - 設定</title>
+  <style>
+    :root { color-scheme: light dark; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic Pro", sans-serif;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 32px;
+      background: #ffffff;
+      color: #111827;
+      line-height: 1.6;
+    }
+    @media (prefers-color-scheme: dark) {
+      body { background: #1f2937; color: #f3f4f6; }
+      input, textarea { background: #111827; color: #f3f4f6; border-color: #374151; }
+      .help { color: #9ca3af; }
+      .section { border-color: #374151; }
+      .notice { background: #422006 !important; border-color: #a16207 !important; }
+      .notice h2 { color: #fbbf24 !important; }
+      .notice div { color: #fde68a !important; }
+    }
+    h1 { font-size: 22px; margin-bottom: 4px; }
+    .subtitle { color: #6b7280; font-size: 13px; margin-bottom: 24px; }
+    .section {
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .section h2 {
+      font-size: 15px;
+      margin: 0 0 12px 0;
+      color: #374151;
+    }
+    @media (prefers-color-scheme: dark) {
+      .section h2 { color: #d1d5db; }
+    }
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    input[type="text"], input[type="password"], textarea {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 13px;
+      font-family: ui-monospace, "SF Mono", Consolas, monospace;
+      box-sizing: border-box;
+    }
+    textarea { resize: vertical; min-height: 120px; }
+    .help {
+      font-size: 12px;
+      color: #6b7280;
+      margin-top: 4px;
+      margin-bottom: 12px;
+    }
+    .help a { color: #3b82f6; }
+    .btn {
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .btn:hover { background: #2563eb; }
+    .btn-secondary {
+      background: #6b7280;
+      margin-left: 8px;
+    }
+    .btn-secondary:hover { background: #4b5563; }
+    .save-status {
+      display: inline-block;
+      margin-left: 12px;
+      font-size: 13px;
+      color: #22c55e;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .save-status.show { opacity: 1; }
+    .row { display: flex; gap: 12px; }
+    .row > div { flex: 1; }
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .checkbox-row input { width: auto; }
+  </style>
+</head>
+<body>
+  <h1>Scrapnote 設定</h1>
+  <div class="subtitle">初回のみAPIキー等を設定してください。その後は <kbd>Ctrl+Shift+S</kbd> で保存できます。</div>
+
+  <div class="section notice" style="background: #fef9c3; border-color: #facc15;">
+    <h2 style="color: #854d0e;">⚠ 注意</h2>
+    <div style="font-size: 13px; color: #713f12;">
+      この拡張機能は、閲覧中のページの内容(タイトル・URL・本文)を <strong>Groq API</strong> と <strong>Notion API</strong> に送信します。<br>
+      社内ポータル、メール、金融サイトなど機密性の高いページでは使用しないでください。
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>🔑 API認証情報</h2>
+    <label for="groqApiKey">Groq API Key</label>
+    <input type="password" id="groqApiKey" placeholder="gsk_..." />
+    <div class="help">
+      <a href="https://console.groq.com/keys" target="_blank">Groq Console</a> で発行してください(無料、課金設定不要)
+    </div>
+
+    <label for="notionToken">Notion Integration Token</label>
+    <input type="password" id="notionToken" placeholder="ntn_..." />
+    <div class="help">
+      <a href="https://www.notion.so/profile/integrations" target="_blank">notion.so/profile/integrations</a> で「+ New integration」から発行してください
+    </div>
+
+    <label for="notionDatabaseId">Notion Database ID</label>
+    <input type="text" id="notionDatabaseId" placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" />
+    <div class="help">
+      Notionデータベースを開き、URLの「<code>notion.so/{workspace}/<strong>ここの32文字</strong>?v=...</code>」の部分。<br>
+      データベースの「…」メニュー → 「Connections」 → 作成した Integration を接続してください。
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>🏷️ タグ辞書</h2>
+    <div class="help">
+      AI分類時にこの中からのみタグを選ばせます(新規タグは作りません)。JSONで編集可能。
+    </div>
+    <textarea id="tagDictionary"></textarea>
+  </div>
+
+  <div class="section">
+    <h2>📁 カテゴリ</h2>
+    <div class="help">AI分類時に1つだけ選ばせる大分類。JSON配列で編集可能。</div>
+    <textarea id="categoryList" style="min-height: 80px;"></textarea>
+  </div>
+
+  <div class="section">
+    <h2>⚙️ その他</h2>
+    <div class="checkbox-row">
+      <input type="checkbox" id="saveFullContent" />
+      <label for="saveFullContent" style="margin: 0;">記事本文全体をNotionに保存(オフライン閲覧可能、容量増)</label>
+    </div>
+  </div>
+
+  <button class="btn" id="saveBtn">💾 設定を保存</button>
+  <button class="btn btn-secondary" id="resetBtn">初期値に戻す</button>
+  <span class="save-status" id="saveStatus">✅ 保存しました</span>
+
+  <script type="module" src="options.js"></script>
+</body>
+</html>

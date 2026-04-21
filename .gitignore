@@ -1,0 +1,10 @@
+.DS_Store
+.vscode/
+.idea/
+.claude/
+node_modules/
+dist/
+*.key
+.env
+.env.local
+HANDOFF.md
