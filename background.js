@@ -69,10 +69,11 @@ async function handleClip(tab) {
   };
   const markdown = extraction.markdown || "";
 
-  // 2. Groq API で分類
+  // 2. 既存タグを取得し、Groq API で分類
+  const existingTags = await fetchExistingTags(config);
   let classification;
   try {
-    classification = await classifyWithGroq(metadata, markdown, config);
+    classification = await classifyWithGroq(metadata, markdown, config, existingTags);
   } catch (err) {
     console.warn("[Scrapnote] Groq classification failed, saving without tags:", err);
     classification = {
@@ -145,6 +146,31 @@ function getDefaultCategoryList() {
 }
 
 // ------------------------------------------------------------
+// Notion DB から既存タグを取得
+// ------------------------------------------------------------
+async function fetchExistingTags(config) {
+  try {
+    const res = await fetch(
+      `https://api.notion.com/v1/databases/${config.notionDatabaseId}`,
+      {
+        headers: {
+          "Authorization": `Bearer ${config.notionToken}`,
+          "Notion-Version": NOTION_VERSION
+        }
+      }
+    );
+    if (!res.ok) return [];
+    const db = await res.json();
+    const tagsProperty = db.properties?.Tags;
+    if (tagsProperty?.type !== "multi_select") return [];
+    return tagsProperty.multi_select.options.map((o) => o.name);
+  } catch (err) {
+    console.warn("[Scrapnote] Failed to fetch existing tags:", err);
+    return [];
+  }
+}
+
+// ------------------------------------------------------------
 // ページ本文抽出(content scriptを動的注入)
 // ------------------------------------------------------------
 async function extractPageContent(tabId) {
@@ -169,9 +195,10 @@ async function extractPageContent(tabId) {
 // ------------------------------------------------------------
 // Groq API 呼び出し(OpenAI 互換形式)
 // ------------------------------------------------------------
-async function classifyWithGroq(metadata, markdown, config) {
-  const tagDictFlat = Object.values(config.tagDictionary).flat();
-  const prompt = buildPrompt(metadata, markdown, tagDictFlat, config.categoryList);
+async function classifyWithGroq(metadata, markdown, config, existingTags) {
+  const seedTags = Object.values(config.tagDictionary || {}).flat();
+  const allKnownTags = [...new Set([...existingTags, ...seedTags])];
+  const prompt = buildPrompt(metadata, markdown, allKnownTags, config.categoryList);
 
   const res = await fetch(GROQ_API_URL, {
     method: "POST",
@@ -204,12 +231,12 @@ async function classifyWithGroq(metadata, markdown, config) {
 
   const result = JSON.parse(text);
 
-  // タグ候補外のフィルタ(大文字小文字を無視してマッチ)
-  const allowedTagsLower = new Map(tagDictFlat.map((t) => [t.toLowerCase(), t]));
+  // タグの正規化: 既存タグと一致すれば既存の表記を使用、新規はそのまま小文字化
+  const knownTagsLower = new Map(allKnownTags.map((t) => [t.toLowerCase(), t]));
   result.tags = (result.tags || [])
-    .map((t) => allowedTagsLower.get(t.toLowerCase()))
-    .filter(Boolean)
-    .slice(0, 3);
+    .map((t) => knownTagsLower.get(t.toLowerCase()) || t.toLowerCase())
+    .filter((t) => t.length > 0)
+    .slice(0, 5);
 
   // カテゴリ候補外のフォールバック
   if (!config.categoryList.includes(result.category)) {
@@ -232,12 +259,15 @@ async function classifyWithGroq(metadata, markdown, config) {
   return result;
 }
 
-function buildPrompt(metadata, markdown, tagList, categoryList) {
+function buildPrompt(metadata, markdown, knownTags, categoryList) {
   const body = markdown.slice(0, 4000);
+  const tagSection = knownTags.length > 0
+    ? `【既存タグ(優先的に再利用すること)】\n${JSON.stringify(knownTags)}\n\n上記の既存タグに該当するものがあれば優先的に使ってください。\n該当するタグがない場合のみ、記事内容に適した新しいタグを英小文字・ハイフン区切りで作成できます。`
+    : `記事内容に適したタグを英小文字・ハイフン区切りで作成してください。`;
+
   return `あなたは記事分類の専門家です。以下の記事を分析し、JSON形式でのみ回答してください。
 
-【タグ候補(この中からのみ選択。新規作成厳禁)】
-${JSON.stringify(tagList)}
+${tagSection}
 
 【カテゴリ候補(この中から1つだけ選択)】
 ${JSON.stringify(categoryList)}
@@ -253,7 +283,7 @@ ${body}
 【出力形式(JSONのみ、前後の説明文禁止)】
 {
   "summary": "3行以内の日本語要約",
-  "tags": ["最大3つ、上記候補リストから選択"],
+  "tags": ["最大5つ、既存タグ優先。新規作成は英小文字・ハイフン区切り"],
   "category": "上記カテゴリ候補から1つ",
   "priority": "high|mid|low",
   "read_time_min": <読了予測分数の数値>
