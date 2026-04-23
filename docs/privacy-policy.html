@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scrapnote - Privacy Policy</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic Pro", sans-serif;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 32px 16px;
+      line-height: 1.8;
+      color: #1a1a1a;
+    }
+    h1 { font-size: 24px; border-bottom: 2px solid #e5e7eb; padding-bottom: 8px; }
+    h2 { font-size: 18px; margin-top: 32px; }
+    table { border-collapse: collapse; width: 100%; margin: 12px 0; }
+    th, td { border: 1px solid #d1d5db; padding: 8px 12px; text-align: left; font-size: 14px; }
+    th { background: #f3f4f6; }
+    .updated { color: #6b7280; font-size: 13px; }
+    a { color: #3b82f6; }
+  </style>
+</head>
+<body>
+
+<h1>Scrapnote Privacy Policy</h1>
+<p class="updated">Last updated: 2026-04-22</p>
+
+<p>
+  Scrapnote ("the Extension") is a Chrome extension that classifies web articles using AI
+  and saves them to Notion. This privacy policy explains what data is collected,
+  how it is used, and how it is protected.
+</p>
+
+<h2>1. Data We Collect</h2>
+<p>When you activate the Extension (via shortcut or popup button), the following data is collected <strong>from the currently active tab only</strong>:</p>
+<table>
+  <tr><th>Data</th><th>Purpose</th></tr>
+  <tr><td>Page title</td><td>Saved as the article title in Notion</td></tr>
+  <tr><td>Page URL</td><td>Saved as a reference link in Notion</td></tr>
+  <tr><td>Page content (text)</td><td>Sent to AI for classification; optionally saved to Notion</td></tr>
+  <tr><td>Author name, site name</td><td>Saved as metadata in Notion</td></tr>
+</table>
+<p>The Extension does <strong>not</strong> collect data from any page other than the one you explicitly activate it on. It does not track browsing history, collect personal information, or run in the background.</p>
+
+<h2>2. Third-Party Services</h2>
+<p>The collected data is sent to the following third-party services:</p>
+<table>
+  <tr><th>Service</th><th>Data sent</th><th>Purpose</th><th>Retention</th></tr>
+  <tr>
+    <td><a href="https://groq.com/privacy-policy/" target="_blank">Groq API</a></td>
+    <td>Title, URL, first 4,000 characters of content</td>
+    <td>AI-based article classification (tags, category, summary)</td>
+    <td>Not retained after processing (per Groq's policy)</td>
+  </tr>
+  <tr>
+    <td><a href="https://www.notion.so/privacy" target="_blank">Notion API</a></td>
+    <td>Title, URL, full content, classification results</td>
+    <td>Saving the article to your Notion database</td>
+    <td>Stored in your Notion workspace until you delete it</td>
+  </tr>
+</table>
+
+<h2>3. API Keys</h2>
+<p>The Extension requires you to provide your own API keys (Groq API Key, Notion Integration Token). These keys are:</p>
+<ul>
+  <li><strong>Stored locally</strong> on your device using <code>chrome.storage.local</code></li>
+  <li><strong>Encrypted</strong> with AES-256-GCM before storage</li>
+  <li><strong>Never sent</strong> to any server other than the respective API endpoints (Groq, Notion)</li>
+  <li><strong>Never collected</strong> by the Extension developer</li>
+</ul>
+
+<h2>4. Data Storage</h2>
+<ul>
+  <li>All Extension settings (API keys, tag seeds, preferences) are stored locally in your browser using <code>chrome.storage.local</code></li>
+  <li>No data is stored on any server operated by the Extension developer</li>
+  <li>Uninstalling the Extension removes all locally stored data</li>
+</ul>
+
+<h2>5. Data We Do NOT Collect</h2>
+<ul>
+  <li>Browsing history or activity on pages where the Extension is not activated</li>
+  <li>Personal information (name, email, address, etc.)</li>
+  <li>Analytics, telemetry, or usage statistics</li>
+  <li>Cookies or tracking identifiers</li>
+</ul>
+
+<h2>6. User Control</h2>
+<ul>
+  <li>The Extension only activates when you explicitly press the shortcut (<kbd>Ctrl+Shift+S</kbd>) or click the popup button</li>
+  <li>You can delete saved articles directly from your Notion workspace</li>
+  <li>You can revoke API keys at any time from Groq Console and Notion settings</li>
+  <li>Uninstalling the Extension removes all local data</li>
+</ul>
+
+<h2>7. Security</h2>
+<ul>
+  <li>API keys are encrypted with AES-256-GCM before local storage</li>
+  <li>All communication with third-party APIs uses HTTPS</li>
+  <li>The Extension does not inject scripts into pages except when explicitly activated</li>
+  <li>Source code is open source and available on <a href="https://github.com/" target="_blank">GitHub</a></li>
+</ul>
+
+<h2>8. Children's Privacy</h2>
+<p>The Extension is not directed at children under 13 and does not knowingly collect data from children.</p>
+
+<h2>9. Changes to This Policy</h2>
+<p>This privacy policy may be updated when new features are added. Changes will be reflected on this page with an updated date.</p>
+
+<h2>10. Contact</h2>
+<p>If you have questions about this privacy policy, please open an issue on the <a href="https://github.com/" target="_blank">GitHub repository</a>.</p>
+
+</body>
+</html>
