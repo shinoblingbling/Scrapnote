@@ -219,7 +219,7 @@ async function classifyWithGroq(metadata, markdown, config, existingTags) {
     const errBody = await res.json().catch(() => ({}));
     const detail = errBody.error?.message || "Unknown error";
     console.error("[Scrapnote] Groq API error detail:", detail);
-    throw new Error(`AI分類に失敗しました(${res.status})`);
+    throw new Error(`AI分類に失敗しました (${res.status})\n${detail}`);
   }
 
   const data = await res.json();
@@ -329,7 +329,14 @@ async function saveToNotion(metadata, classification, markdown, config) {
   if (!res.ok) {
     const errText = await res.text();
     console.error("[Scrapnote] Notion API error detail:", errText);
-    throw new Error(`Notionへの保存に失敗しました(${res.status})`);
+    let detail = "";
+    try {
+      const errJson = JSON.parse(errText);
+      detail = errJson.message || "";
+    } catch {
+      detail = errText.slice(0, 300);
+    }
+    throw new Error(`Notionへの保存に失敗しました (${res.status})\n${detail}`);
   }
 
   return res.json();

@@ -128,7 +128,37 @@
     <input type="text" id="notionDatabaseId" placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" />
     <div class="help">
       Notionデータベースを開き、URLの「<code>notion.so/{workspace}/<strong>ここの32文字</strong>?v=...</code>」の部分。<br>
-      データベースの「…」メニュー → 「Connections」 → 作成した Integration を接続してください。
+      データベースの「…」メニュー → 「コネクト」 → 作成した Integration を接続してください。
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>📋 Notionデータベースに必要なプロパティ</h2>
+    <div class="help" style="margin-bottom: 8px;">
+      以下のプロパティ名・型でNotionデータベースを作成してください。プロパティ名は大文字小文字も含めて完全一致が必要です。
+    </div>
+    <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+      <thead>
+        <tr style="background: #f3f4f6;">
+          <th style="border: 1px solid #d1d5db; padding: 6px 10px; text-align: left;">プロパティ名</th>
+          <th style="border: 1px solid #d1d5db; padding: 6px 10px; text-align: left;">型</th>
+          <th style="border: 1px solid #d1d5db; padding: 6px 10px; text-align: left;">用途</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td style="border: 1px solid #d1d5db; padding: 6px 10px;"><code>Title</code></td><td style="border: 1px solid #d1d5db; padding: 6px 10px;">タイトル</td><td style="border: 1px solid #d1d5db; padding: 6px 10px;">記事タイトル(デフォルトの「名前」列をリネーム)</td></tr>
+        <tr><td style="border: 1px solid #d1d5db; padding: 6px 10px;"><code>URL</code></td><td style="border: 1px solid #d1d5db; padding: 6px 10px;">URL</td><td style="border: 1px solid #d1d5db; padding: 6px 10px;">記事URL</td></tr>
+        <tr><td style="border: 1px solid #d1d5db; padding: 6px 10px;"><code>Tags</code></td><td style="border: 1px solid #d1d5db; padding: 6px 10px;">マルチセレクト</td><td style="border: 1px solid #d1d5db; padding: 6px 10px;">AI生成タグ(最大5つ)</td></tr>
+        <tr><td style="border: 1px solid #d1d5db; padding: 6px 10px;"><code>Category</code></td><td style="border: 1px solid #d1d5db; padding: 6px 10px;">セレクト</td><td style="border: 1px solid #d1d5db; padding: 6px 10px;">AI生成カテゴリ</td></tr>
+        <tr><td style="border: 1px solid #d1d5db; padding: 6px 10px;"><code>Priority</code></td><td style="border: 1px solid #d1d5db; padding: 6px 10px;">セレクト</td><td style="border: 1px solid #d1d5db; padding: 6px 10px;">High / Mid / Low</td></tr>
+        <tr><td style="border: 1px solid #d1d5db; padding: 6px 10px;"><code>Status</code></td><td style="border: 1px solid #d1d5db; padding: 6px 10px;">セレクト</td><td style="border: 1px solid #d1d5db; padding: 6px 10px;">Unread / Reading / Done / Archived</td></tr>
+        <tr><td style="border: 1px solid #d1d5db; padding: 6px 10px;"><code>Summary</code></td><td style="border: 1px solid #d1d5db; padding: 6px 10px;">テキスト</td><td style="border: 1px solid #d1d5db; padding: 6px 10px;">AI生成要約</td></tr>
+        <tr><td style="border: 1px solid #d1d5db; padding: 6px 10px;"><code>Read Time</code></td><td style="border: 1px solid #d1d5db; padding: 6px 10px;">数値</td><td style="border: 1px solid #d1d5db; padding: 6px 10px;">読了予測分数</td></tr>
+        <tr><td style="border: 1px solid #d1d5db; padding: 6px 10px;"><code>Added</code></td><td style="border: 1px solid #d1d5db; padding: 6px 10px;">日付</td><td style="border: 1px solid #d1d5db; padding: 6px 10px;">保存日時(自動設定)</td></tr>
+      </tbody>
+    </table>
+    <div class="help" style="margin-top: 12px;">
+      作成後、データベース右上の「...」メニュー → 「コネクト」から作成済みの Integration を接続してください。
     </div>
   </div>
 
@@ -158,6 +188,46 @@
   <button class="btn" id="saveBtn">💾 設定を保存</button>
   <button class="btn btn-secondary" id="resetBtn">初期値に戻す</button>
   <span class="save-status" id="saveStatus">✅ 保存しました</span>
+
+  <div class="section" style="margin-top: 24px;">
+    <h2>❓ トラブルシューティング</h2>
+    <div class="help" style="margin-bottom: 12px;">
+      保存に失敗した場合、エラーメッセージを確認して以下を参考にしてください。
+    </div>
+
+    <h3 style="font-size: 14px; margin-top: 16px;">Notionへの保存に失敗しました (400)</h3>
+    <ul style="font-size: 13px; line-height: 1.8;">
+      <li><strong>"XXX is not a property that exists"</strong> — Notionデータベースに対象プロパティがありません。<code>Title</code>, <code>URL</code>, <code>Tags</code>, <code>Category</code>, <code>Priority</code>, <code>Status</code>, <code>Summary</code>, <code>Read Time</code>, <code>Added</code> がすべて存在するか確認してください</li>
+      <li><strong>"is expected to be type Y"</strong> — プロパティの型が違います。READMEのプロパティ表を確認してください</li>
+    </ul>
+
+    <h3 style="font-size: 14px; margin-top: 16px;">Notionへの保存に失敗しました (404)</h3>
+    <ul style="font-size: 13px; line-height: 1.8;">
+      <li>Database IDが間違っているか、Integrationがデータベースに接続されていません</li>
+      <li>データベースの「...」メニュー → 「コネクト」から Integration を接続してください</li>
+    </ul>
+
+    <h3 style="font-size: 14px; margin-top: 16px;">Notionへの保存に失敗しました (401)</h3>
+    <ul style="font-size: 13px; line-height: 1.8;">
+      <li>Notion Integration Tokenが不正です。<code>ntn_</code>で始まるキーを再発行してください</li>
+    </ul>
+
+    <h3 style="font-size: 14px; margin-top: 16px;">AI分類に失敗しました (401)</h3>
+    <ul style="font-size: 13px; line-height: 1.8;">
+      <li>Groq API Keyが不正です。<code>gsk_</code>で始まるキーを <a href="https://console.groq.com/keys" target="_blank">Groq Console</a> で再発行してください</li>
+    </ul>
+
+    <h3 style="font-size: 14px; margin-top: 16px;">AI分類に失敗しました (429)</h3>
+    <ul style="font-size: 13px; line-height: 1.8;">
+      <li>Groq APIのレート制限に達しました(30 RPM / 14,400 RPD)。少し待ってから再試行してください</li>
+    </ul>
+
+    <h3 style="font-size: 14px; margin-top: 16px;">特定サイトで本文抽出が失敗する</h3>
+    <ul style="font-size: 13px; line-height: 1.8;">
+      <li>JavaScriptが多用されたSPA(X等)では本文取得に失敗することがあります。タイトルとURLのみ保存されます</li>
+      <li><code>chrome://</code>、Chrome Web Store、新規タブでは仕様上動作しません</li>
+    </ul>
+  </div>
 
   <script type="module" src="options.js"></script>
 </body>

@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Scrapnote",
-  "version": "0.4.0",
-  "description": "現在のページをAIで自動分類してNotionに保存します",
+  "version": "0.4.2",
+  "description": "Ctrl+Shift+SでWeb記事をAI自動分類してNotionに保存。エラー時はオプション画面のトラブルシューティングを参照してください。",
   "permissions": [
     "activeTab",
     "scripting",
